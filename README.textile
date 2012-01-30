@@ -1,0 +1,101 @@
+h1. redenLabel jQuery plugin
+
+*Version:* 1.0
+
+*License:* "jQuery License":http://docs.jquery.com/License
+
+*Author:* "Gergő Németh":http://reden87.info/
+
+*Size:* 2KB
+
+h2. Leírás
+
+Ez a jQuery plugin funkcionalitásban megegyezik a méltán népszerű "In-Field Labels jQuery Plugin":https://github.com/dcneiner/In-Field-Labels-jQuery-Plugin tudásával, csupán pár javítás lett eszközölve (a plugin bár funkcionálisan ugyan azt tudja, de az alapoktól újra lett írva).
+
+h2. Előnyök az eredeti plugin-nel szemben
+
+* Ha egy mezőbe írunk szöveget, majd kitöröljük, akkor az eredeti pluginban nem jelenik meg újra a label szövege.
+
+* Az eredeti plugin nem állítja helyre a labeleket a reset gomb megnyomásakor.
+
+* Az eddigi munkáim során az eredeti plugin használatakor tapasztaltam egyéb hibákat amikor a labelt tartlamazó divet animáltam, ezek a hibák a saját pluginnál nem jöttek elő.
+
+h2. Ismert hibák
+
+A webkit alapú böngészők (Safari és Google Chrome) autocomplete funkciója bekavar a plugin működésébe, a label tag nem tűnik el. A probléma elkerülhető a lentebb leírt módszerrel. A hiba megkerülése folyamatban van.
+
+h2. Használat
+
+h3. HTML
+
+A HTML kódban érdemes használni az autocomplete="off" taget a webkit hiba elkerülése érdekében.
+
+<pre>
+<p>
+  <label for="valami_id">Label Text</label>
+  <input type="text" name="field_id" id="valami_id" value="" autocomplete="off" />
+</p>
+</pre>
+
+h3. CSS
+
+CSS-el csupán a label pozícionálását kell elvégezni, hogy a label pont az input mező vagy textarea mező szövege fölé essen.
+
+<pre>
+label {
+	top: 0;
+	left: 0;
+}
+</pre>
+
+A plugin automatikusan a következő stílusokat alkalmazza:
+
+<pre>
+/* csak azokra a p elemekre, melyekben szerepel label HTML tag! */
+p {
+	position: relative;
+}
+
+/* csak azokra a label elemekre, melyekre alkalmazva lett a plugin! */
+label {
+	/* amennyiben a labelhez tartozó inut mező már tartalmaz default szöveget, abban az esetben az opacity értéke 0 */
+	opacity: 1;
+	/* amennyiben a labelhez tartozó inut mező már tartalmaz default szöveget, abban az esetben a display értéke none */
+	display: block;
+	cursor: text;
+	position: absolute;
+}
+</pre>
+
+h3. Javascript
+
+<pre>
+$(document).ready(function(){
+  $('label').redenLabel();
+});
+</pre>
+
+h2. Beállítások
+
+Hasonlóan az eredeti pluginhez, itt is 2 beállítási lehetőség van:
+
+<pre>
+$('label').redenLabel({
+	fadeOpacity: 0.5, // milyen átetszőségre halványodjon a label
+	fadeDuration: 300 // mennyi idő alatt halványodjon a label
+});
+</pre>
+
+Az opciók megadása nem kötelező az alapértelmezett értékek a fenti példában található értékek.
+
+h2. Tervezett módosítások a jövőben
+
+* Webkit bug javítás
+
+* HTML5 tagek támogatása
+
+h2. Changelog
+
+*Version 1.0*
+
+* Első kiadás
