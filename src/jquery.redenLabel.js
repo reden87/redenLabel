@@ -33,6 +33,7 @@
 				var opacity = 0;
 				var display = 'none';
 			}
+			var input_elements = $('input[id=' + id + '], textarea[id=' + id + ']');
 			
 			
 			$(this).parent('p').css( 'position', 'relative' );
@@ -44,8 +45,24 @@
 			});
 			
 			
+			// webkit autocomplete hiba javítása
+			var _interval = window.setInterval(function () {
+				if( $.browser.webkit ) {
+					var autofill = $('input[id=' + id + ']:-webkit-autofill');
+					if( autofill.length > 0 ) {
+						window.clearInterval(_interval); // stop polling
+						autofill.each(function() {
+							var clone = $(this).clone(true, true);
+							$(this).after(clone).remove();
+							set_opacity( $('label[for=' + $(this).attr('id') + ']'), 0 );
+						});
+					}
+				}
+			}, 300);
+			
+			
 			// ha focus-ba kerül, és üres, akkor halványítás
-			$('input[id=' + $(this).attr('for') + '], textarea[id=' + $(this).attr('for') + ']').bind( 'focus', function() {
+			input_elements.bind( 'focus', function() {
 				if( empty($(this).val()) ) {
 					set_opacity( $('label[for=' + $(this).attr('id') + ']'), settings.fadeOpacity );
 				}
@@ -53,7 +70,7 @@
 			
 			
 			// ha kimegy belőle a focus, és üres, akkor sötétítés
-			$('input[id=' + $(this).attr('for') + '], textarea[id=' + $(this).attr('for') + ']').live( 'focusout', function() {
+			input_elements.live( 'focusout', function() {
 				if( empty($(this).val()) ) {
 					set_opacity( $('label[for=' + $(this).attr('id') + ']'), 1 );
 				}
@@ -61,7 +78,7 @@
 			
 			
 			// ha lenyomunk egy billentyűt, és üres akkor közepesen halványra (akár sötét volt előtte, akár láthatatlan), különben láthatatlanítás
-			$('input[id=' + $(this).attr('for') + '], textarea[id=' + $(this).attr('for') + ']').live( 'keydown', function(e) {
+			input_elements.live( 'keydown', function(e) {
 				var opacity = $('label[for=' + $(this).attr('id') + ']').css('opacity');
 				var key = e.keyCode;
 				if( opacity != 0 &&
@@ -85,7 +102,7 @@
 			
 			
 			// ha lenyomunk egy billentyűt, és üres akkor közepesen halványra (akár sötét volt előtte, akár láthatatlan), különben láthatatlanítás
-			$('input[id=' + $(this).attr('for') + '], textarea[id=' + $(this).attr('for') + ']').live( 'keyup', function() {
+			input_elements.live( 'keyup', function() {
 				if( empty($(this).val()) ) {
 					set_opacity( $('label[for=' + $(this).attr('id') + ']'), settings.fadeOpacity );
 				}
@@ -96,23 +113,22 @@
 			
 			
 			// paste event
-			$('input[id=' + $(this).attr('for') + '], textarea[id=' + $(this).attr('for') + ']').live( 'paste', function() {
+			input_elements.live( 'paste', function() {
 				// mivel üres sztringet nem tudunk paste-elni, ezért feltételezzük hogy szöveg került a mezőbe, és láthatatlanná tesszük a labelt
 				set_opacity( $('label[for=' + $(this).attr('id') + ']'), 0 );
 			});
 			
 			// lementjük az eredeti értékét a mezőknek, hogy reset gomb nyomásakor tudjunk ellenőrízni, hogy kell-e mutatni az input mezőt vagy sem
-			var base = $('input[id=' + $(this).attr('for') + '], textarea[id=' + $(this).attr('for') + ']');
-			var base_val = $('input[id=' + $(this).attr('for') + '], textarea[id=' + $(this).attr('for') + ']').val();
+			var input_elements_val = input_elements.val();
 			
 			
 			// ha reset gombra kattintunk, akkor mindet sötétítjük
 			$('input[type=reset]').live( 'click', function() {
-				if( empty(base_val) ) {
-					set_opacity( $('label[for=' + base.attr('id') + ']'), 1 );
+				if( empty(input_elements_val) ) {
+					set_opacity( $('label[for=' + input_elements.attr('id') + ']'), 1 );
 				}
 				else {
-					set_opacity( $('label[for=' + base.attr('id') + ']'), 0 );
+					set_opacity( $('label[for=' + input_elements.attr('id') + ']'), 0 );
 				}
 			});
 			
